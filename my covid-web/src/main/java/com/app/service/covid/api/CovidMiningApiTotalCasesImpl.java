@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.app.mapper.CovidCasesAreaMapper;
@@ -46,7 +48,7 @@ public class CovidMiningApiTotalCasesImpl implements CovidMiningAPITotalCases {
 
 		Date date1DayBefore = DateTools.minusDate(1);
 
-		Date date3DayBefore = DateTools.minusDate(3);
+		Date date3DayBefore = DateTools.minusDate(7);
 
 		String json = getTotalCasesMYFromAPI(defaultDate, defaultTime, date1DayBefore, date3DayBefore);
 
@@ -87,7 +89,7 @@ public class CovidMiningApiTotalCasesImpl implements CovidMiningAPITotalCases {
 
 	private void updateDB(List<Covid19ApiModel> covid19ApiModels) throws ParseException {
 
-		List<CovidCasesAreaEntity> covidCasesAreaEntities = covidCasesRepository.listLast5Records();
+		List<CovidCasesAreaEntity> covidCasesAreaEntities = covidCasesRepository.listLast5RecordsHQL();
 
 		for (Covid19ApiModel covid19ApiModel : covid19ApiModels) {
 			covid19ApiModel.getDate();
@@ -142,7 +144,7 @@ public class CovidMiningApiTotalCasesImpl implements CovidMiningAPITotalCases {
 		String stringDate3DayBefore = DateTools.getDate(defaultDate, date3DayBefore) + defaultTime;
 
 		log.info("stringDate1DayBefore = {} ", stringDate1DayBefore);
-		log.info("stringDate2DayBefore = {} ", stringDate3DayBefore);
+		log.info("stringDate3DayBefore = {} ", stringDate3DayBefore);
 
 		urlBuffer.append(URL);
 
@@ -160,7 +162,7 @@ public class CovidMiningApiTotalCasesImpl implements CovidMiningAPITotalCases {
 	@Override
 	public List<CovidCasesArea> getLast5RecordsMY() throws Exception {
 		// TODO Auto-generated method stub
-		List<CovidCasesAreaEntity> casesEntities = covidCasesRepository.listLast5Records();
+		List<CovidCasesAreaEntity> casesEntities = covidCasesRepository.listLast5RecordsHQL();
 
 		CovidCasesAreaMapper mapper = Selma.builder(CovidCasesAreaMapper.class).build();
 
@@ -202,10 +204,34 @@ public class CovidMiningApiTotalCasesImpl implements CovidMiningAPITotalCases {
 			covidApiModels.add(covid19ApiModel);
 			totalCases = getCasesDifferent(covidApiModels);
 		}
-
-		
 		
 		log.info("getTotalfromDB ends.  totalCases = {} date={}", totalCases,date);
 		return "Total Cases " + totalCases + " (" + date + ")";
+	}
+	
+	@Override
+	public List<CovidCasesArea> getLast5RecordsMYWithSize(int size) throws Exception {
+		// TODO Auto-generated method stub
+
+		// TODO: Practical bonus 3:
+
+		Pageable page = PageRequest.of(0, size);
+		List<CovidCasesAreaEntity> list = covidCasesRepository.listLast5RecordsHQLWithSize(page);
+
+		CovidCasesAreaMapper mapper = Selma.builder(CovidCasesAreaMapper.class).build();
+		
+		// complete the code here as getLast5RecordsMY method
+		List<CovidCasesArea> casesPojos = new ArrayList<CovidCasesArea>();
+		for (CovidCasesAreaEntity covidCasesAreaEntity : list) {
+			CovidCasesArea covidCasesArea = mapper.asResource(covidCasesAreaEntity);
+			casesPojos.add(covidCasesArea);
+		}
+		
+		if (casesPojos.size() == 0) {
+			throw new Exception("query return nothing!");
+		}
+		
+		log.info("getLast5RecordsMYWithSize ends.");
+		return casesPojos;
 	}
 }

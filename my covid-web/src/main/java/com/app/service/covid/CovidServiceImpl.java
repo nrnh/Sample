@@ -45,10 +45,11 @@ public class CovidServiceImpl implements CovidService {
 				CovidCasesArea covidCasesArea = mapper.asResource(covidCasesEntity);
 				covidCasesAreaList.add(covidCasesArea);
 				log.info("covidCasesEntity total Cases={}", covidCasesEntity.getCases());
+				log.info("covidCasesEntity total Cases={}", covidCasesEntity.getDate());
 			}
 			log.info(" getCovid() return Size={}", covidCaseEntities.size());
 		}
-
+		
 		return covidCasesAreaList;
 
 	}
