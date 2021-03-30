@@ -1,6 +1,7 @@
 package com.app.mining.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -8,6 +9,7 @@ import com.app.mining.service.covid.api.CovidMiningAPITotalCases;
 
 import lombok.extern.slf4j.Slf4j;
 
+@CrossOrigin(origins="http://localhost:4200", maxAge = 3600)
 @RestController
 @Slf4j
 public class MyCovidMiningController {
@@ -31,7 +33,7 @@ public class MyCovidMiningController {
 			log.error("mining() exception" + e.getMessage());
 			throw new Exception(e);
 		}
-		log.info(MINING_MY_COVID + " return = {}" + strReturn);
+		log.info("return value = {}" + strReturn);
 		return strReturn;
 	}
 	

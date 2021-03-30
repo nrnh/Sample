@@ -2,6 +2,7 @@ package com.app.service.covid;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,5 +50,71 @@ public class CovidBonusServiceImpl implements CovidBonusService {
 		
 		log.info("bonus() ends");
 		return covidCasesBonusList;
+	}
+
+	@Override
+	public CovidCasesBonus updateBonus(CovidCasesBonus covidCasesBonus) {
+		// TODO Auto-generated method stub
+		CovidCasesBonus savedBonus = null;
+		CovidCasesBonusEntity covidAreaBonusEntity = new CovidCasesBonusEntity();
+		
+		covidAreaBonusEntity.setId(covidCasesBonus.getId());
+		covidAreaBonusEntity.setDescription(covidCasesBonus.getDescription());
+		
+		CovidCasesBonusEntity savedEntity = covidCasesBonusRepository.save(covidAreaBonusEntity);
+		CovidAreaBonusMapper mapper = Selma.builder(CovidAreaBonusMapper.class).build();
+		
+		savedBonus = mapper.asResource(savedEntity);
+		
+		return savedBonus;
+	}
+
+	@Override
+	public CovidCasesBonus postBonus(CovidCasesBonus covidCasesBonus) {
+		// TODO Auto-generated method stub
+		CovidAreaBonusMapper mapper = Selma.builder(CovidAreaBonusMapper.class).build();
+		
+		CovidCasesBonusEntity covidAreaBonusEntity = mapper.asEntity(covidCasesBonus);
+		covidCasesBonusRepository.save(covidAreaBonusEntity);
+		
+		return covidCasesBonus;
+	}
+
+	@Override
+	public int deleteSoapBonus(String bonus) {
+		// TODO Auto-generated method stub
+		int result = 0;
+		
+		result = covidCasesBonusRepository.deleteSoap(bonus);
+		
+		return result;
+	}
+
+	@Override
+	public CovidCasesBonus addBonus(String bonus) {
+		// TODO Auto-generated method stub
+		CovidCasesBonus covidCasesBonus = null;
+		CovidCasesBonusEntity covidAreaBonusEntity = new CovidCasesBonusEntity();
+		
+		covidAreaBonusEntity.setDescription(bonus);
+
+		CovidCasesBonusEntity savedEntity = covidCasesBonusRepository.save(covidAreaBonusEntity);
+		CovidAreaBonusMapper mapper = Selma.builder(CovidAreaBonusMapper.class).build();
+
+		covidCasesBonus = mapper.asResource(savedEntity);
+		
+		return covidCasesBonus;
+	}
+
+	@Override
+	public int deleteBonus(long id) {
+		// TODO Auto-generated method stub
+		Optional<CovidCasesBonusEntity> entityOptional = covidCasesBonusRepository.findById(id);
+		if (entityOptional.isPresent()) {
+			CovidCasesBonusEntity covidAreaBonusEntity = entityOptional.get();
+			covidCasesBonusRepository.delete(covidAreaBonusEntity);
+			return 1;
+		}
+		return 0;
 	}
 }

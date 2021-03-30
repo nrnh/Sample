@@ -122,4 +122,45 @@ public class CovidServiceImpl implements CovidService {
 		return 0;
 
 	}
+
+	@Override
+	public CovidCasesDesc updateCovid(CovidCasesDesc covidDescCase) {
+		// TODO Auto-generated method stub
+		
+		CovidCasesDesc covidCasesDescSaved = null;
+		
+		CovidCasesDescEntity covidAreaDescEntity = new CovidCasesDescEntity();
+		
+		covidAreaDescEntity.setId(covidDescCase.getId());
+		covidAreaDescEntity.setDescription(covidDescCase.getDescription());
+
+		CovidCasesDescEntity savedEntity = covidCasesDescRepository.save(covidAreaDescEntity);
+
+		CovidAreaDescMapper mapper = Selma.builder(CovidAreaDescMapper.class).build();
+
+		covidCasesDescSaved = mapper.asResource(savedEntity);
+		
+		return covidCasesDescSaved;
+	}
+	
+	@Override
+	public CovidCasesDesc postCovid(CovidCasesDesc covidDescCase) {
+		// TODO Auto-generated method stub
+
+		CovidAreaDescMapper mapper = Selma.builder(CovidAreaDescMapper.class).build();
+
+		CovidCasesDescEntity covidAreaDescEntity = mapper.asEntity(covidDescCase);
+		CovidCasesDescEntity savedEntity = covidCasesDescRepository.save(covidAreaDescEntity);
+		
+		return covidDescCase;
+	}
+	
+	@Override
+	public int deleteSoap(String desc) throws Exception {
+		log.info("deleteCovid started");
+
+		int result = 0;
+		result = covidCasesDescRepository.deleteSoap(desc);
+		return result;
+	}
 }
