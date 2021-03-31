@@ -21,4 +21,6 @@ public interface CovidService {
 
 	int deleteSoap(String desc) throws Exception;
 
+	List<String> findDuplicateNdelete();
+
 }

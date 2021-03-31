@@ -1,7 +1,6 @@
 package com.app.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,10 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.app.entity.CovidCasesDescEntity;
 import com.app.model.CovidCasesArea;
 import com.app.model.CovidCasesDesc;
-import com.app.repository.covid.CovidCasesDescRepository;
 import com.app.repository.covid.CovidCasesRepository;
 import com.app.service.covid.CovidService;
 import com.app.service.covid.api.CovidMiningAPITotalCases;
@@ -45,6 +42,8 @@ public class CovidController {
 	private final static String POST_COVID = "/covid/post";
 	
 	private final static String DELETE_COVID_SOAPUI = "/covid/delete/soap";
+	
+	private final static String FIND_DUPLICATE_DELETE_COVID = "/covid/delete/duplicate";
 	
 	@Autowired
 	private CovidService covidService;
@@ -232,5 +231,18 @@ public class CovidController {
 		
 		log.info("deleteCovidSoap() ended");
 		return res;
+	}
+	
+	// TODO: Angular Practical 11 - Remove Duplicate values
+	@DeleteMapping(FIND_DUPLICATE_DELETE_COVID)
+	List<String> findDuplicateNdelete() throws Exception {
+		log.info("findDuplicateNdelete() started");
+			
+		// complete the implementation below
+		// ensure logic related to repository move to service implementation
+		covidService.findDuplicateNdelete();
+			
+		log.info("findDuplicateNdelete() ended");
+		return null;
 	}
 }

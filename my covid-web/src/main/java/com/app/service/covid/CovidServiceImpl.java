@@ -150,7 +150,7 @@ public class CovidServiceImpl implements CovidService {
 		CovidAreaDescMapper mapper = Selma.builder(CovidAreaDescMapper.class).build();
 
 		CovidCasesDescEntity covidAreaDescEntity = mapper.asEntity(covidDescCase);
-		CovidCasesDescEntity savedEntity = covidCasesDescRepository.save(covidAreaDescEntity);
+		covidCasesDescRepository.save(covidAreaDescEntity);
 		
 		return covidDescCase;
 	}
@@ -162,5 +162,22 @@ public class CovidServiceImpl implements CovidService {
 		int result = 0;
 		result = covidCasesDescRepository.deleteSoap(desc);
 		return result;
+	}
+
+	@Override
+	public List<String> findDuplicateNdelete() {
+		// TODO Auto-generated method stub
+		log.info("findDuplicateNdelete started");
+		
+		List<String> e = covidCasesDescRepository.findDuplicate();
+
+		for (String s: e) {
+			log.info ("Duplicate value found on Description Table--->" + s);
+			log.info ("Value Deleted--->" + s);
+			covidCasesDescRepository.deleteSoap(s);
+		}
+		
+		log.info("findDuplicateNdelete() ended");
+		return null;
 	}
 }
